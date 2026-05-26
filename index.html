@@ -1,164 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SoundMusic Terminal</title>
-  <style>
-    body {
-      margin: 0;
-      background: #020617;
-      color: #22c55e;
-      font-family: monospace;
-      height: 100vh;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERMINAL</title>
 
-    canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      opacity: 0.25;
-    }
+<style>
+body{
+  margin:0;
+  background:black;
+  overflow:hidden;
+  font-family:Consolas, monospace;
+  color:#00ff66;
+}
 
-    .terminal {
-      position: relative;
-      z-index: 1;
-      max-width: 850px;
-      margin: 60px auto;
-      background: rgba(0, 0, 0, 0.78);
-      border: 1px solid #22c55e;
-      border-radius: 14px;
-      padding: 25px;
-      box-shadow: 0 0 30px #22c55e55;
-    }
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+}
 
-    .title {
-      color: #86efac;
-      font-size: 22px;
-      margin-bottom: 20px;
-    }
+#terminal{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:80%;
+  max-width:1000px;
+  border:1px solid #00ff66;
+  padding:30px;
+  background:rgba(0,0,0,0.85);
+  box-shadow:0 0 25px #00ff66;
+  z-index:2;
+}
 
-    #output {
-      white-space: pre-wrap;
-      line-height: 1.6;
-      min-height: 330px;
-      font-size: 15px;
-    }
+#line{
+  white-space:pre-line;
+  line-height:1.8;
+  font-size:22px;
+}
 
-    button {
-      background: transparent;
-      color: #22c55e;
-      border: 1px solid #22c55e;
-      padding: 12px 22px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-family: monospace;
-      font-size: 15px;
-    }
+#final{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  font-size:180px;
+  color:#00ff66;
+  background:black;
+  z-index:5;
+  text-shadow:0 0 35px #00ff66;
+  animation:pulse 1s infinite;
+}
 
-    button:hover {
-      background: #22c55e;
-      color: #020617;
-    }
-
-    .blink {
-      animation: blink 0.8s infinite;
-    }
-
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-  </style>
+@keyframes pulse{
+  50%{
+    opacity:0.7;
+  }
+}
+</style>
 </head>
+
 <body>
 
 <canvas id="matrix"></canvas>
 
-<div class="terminal">
-  <div class="title">SOUNDMUSIC // CYBER TERMINAL</div>
-  <div id="output">Press START to initialize system<span class="blink">_</span></div>
-  <button onclick="startTerminal()">START</button>
+<div id="terminal">
+<div id="line"></div>
+</div>
+
+<div id="final">
+СОСАЛ?
 </div>
 
 <script>
-  const canvas = document.getElementById("matrix");
-  const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-  const letters = "01SOUNDMUSIC";
-  const fontSize = 16;
-  const columns = canvas.width / fontSize;
-  const drops = Array(Math.floor(columns)).fill(1);
+const letters = "01АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩ";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
 
-  function drawMatrix() {
-    ctx.fillStyle = "rgba(2, 6, 23, 0.08)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+const drops = [];
 
-    ctx.fillStyle = "#22c55e";
-    ctx.font = fontSize + "px monospace";
+for(let x=0;x<columns;x++){
+  drops[x]=1;
+}
 
-    for (let i = 0; i < drops.length; i++) {
-      const text = letters[Math.floor(Math.random() * letters.length)];
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+function draw(){
+  ctx.fillStyle="rgba(0,0,0,0.05)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
+  ctx.fillStyle="#00ff66";
+  ctx.font=fontSize+"px monospace";
 
-      drops[i]++;
-    }
-  }
+  for(let i=0;i<drops.length;i++){
 
-  setInterval(drawMatrix, 45);
+    const text=letters[Math.floor(Math.random()*letters.length)];
 
-  const lines = [
-    "[SYSTEM] Initializing SoundMusic terminal...",
-    "[OK] Loading audio interface...",
-    "[OK] Connecting secure visual layer...",
-    "[SCAN] Searching music frequencies...",
-    "[DATA] Bass level: 92%",
-    "[DATA] Signal strength: maximum",
-    "[OK] Neural rhythm engine online",
-    "[ACCESS] Welcome to SoundMusic",
-    "",
-    ">>> SYSTEM READY"
-  ];
+    ctx.fillText(text,i*fontSize,drops[i]*fontSize);
 
-  let started = false;
-
-  function startTerminal() {
-    if (started) return;
-    started = true;
-
-    const output = document.getElementById("output");
-    output.innerHTML = "";
-
-    let lineIndex = 0;
-    let charIndex = 0;
-
-    function typeLine() {
-      if (lineIndex >= lines.length) {
-        output.innerHTML += '<span class="blink">_</span>';
-        return;
-      }
-
-      if (charIndex < lines[lineIndex].length) {
-        output.innerHTML += lines[lineIndex][charIndex];
-        charIndex++;
-        setTimeout(typeLine, 25);
-      } else {
-        output.innerHTML += "\n";
-        lineIndex++;
-        charIndex = 0;
-        setTimeout(typeLine, 350);
-      }
+    if(drops[i]*fontSize>canvas.height && Math.random()>0.975){
+      drops[i]=0;
     }
 
-    typeLine();
+    drops[i]++;
   }
+}
+
+setInterval(draw,35);
+
+const lines = [
+"[СИСТЕМА] Инициализация терминала...",
+"[OK] Подключение к серверу...",
+"[SCAN] Сканирование сети...",
+"[DECRYPT] Расшифровка данных...",
+"[OK] Данные успешно расшифрованы",
+"[SYSTEM] Вывод результата..."
+];
+
+const output = document.getElementById("line");
+
+let lineIndex = 0;
+let charIndex = 0;
+
+function type(){
+
+  if(lineIndex >= lines.length){
+
+    setTimeout(()=>{
+      document.getElementById("terminal").style.display="none";
+      document.getElementById("final").style.display="flex";
+    },1500);
+
+    return;
+  }
+
+  if(charIndex < lines[lineIndex].length){
+
+    output.innerHTML += lines[lineIndex][charIndex];
+    charIndex++;
+
+    setTimeout(type,30);
+
+  }else{
+
+    output.innerHTML += "\n";
+
+    lineIndex++;
+    charIndex=0;
+
+    setTimeout(type,400);
+  }
+}
+
+type();
 </script>
 
 </body>
